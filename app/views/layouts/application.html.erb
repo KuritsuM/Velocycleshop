@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Velocyclegram</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <header class="header-all">
+      <div class="auth">
+        <%= render 'include/auth/authentication' %>
+        <%= render 'include/main/notification' %>
+      </div>
+      <%= link_to image_tag("Instagram_logo.svg.png", height: 40), '/' %>
+    </header>
+
+    <%= yield %>
+  </body>
+</html>

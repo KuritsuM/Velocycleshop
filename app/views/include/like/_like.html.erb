@@ -1,0 +1,19 @@
+<% like = LikePresenter.new(current_user.id, post.id) %>
+
+<div class="likes">
+  <% if like.user_not_liked_post? %>
+    <!-- send like -->
+    <%= form_with(model: Like.new, local: true) do |form| %>
+      <%= form.number_field :user_id, id: :user_id, value: current_user.id, type: :hidden %>
+      <%= form.number_field :post_id, id: :post_id, value: post.id, type: :hidden %>
+      <div class="actions">
+        <%= form.submit "♥(#{like.count_post_likes})", class: "like" %>
+      </div>
+    <% end %>
+  <% else %>
+    <!-- send dislike -->
+    <%= form_tag like_path(id: like.user_like_id), method: :delete do %>
+      <%= submit_tag "♥(#{like.count_post_likes})", class: "dislike" %>
+    <% end %>
+  <% end %>
+</div>

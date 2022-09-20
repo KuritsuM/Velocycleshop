@@ -1,0 +1,16 @@
+<% if @orders.empty? %>
+  <h1>Вы ничего не заказывали!</h1>
+<% else %>
+  <%= %>
+  <% @orders.each do |order| %>
+    <div class="order">
+      <% post = Post.find(order.post_id) %>
+      <span><%= post.title %></span><br/>
+      <span><%= image_tag post.image %></span>
+      <span><%= number_to_currency(order.total_cost, unit: "₽", format: "%n %u") %></span>
+      <%= link_to 'Отменить заказ лота', destroy_user_order_path(id: order.id), method: :delete %>
+    </div>
+  <% end %>
+  <br/><br/>
+  <h2>Общая цена: <%= number_to_currency(@total_cost, unit: "₽", format: "%n %u") %></h2>
+<% end %>

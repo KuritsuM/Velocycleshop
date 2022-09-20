@@ -1,0 +1,46 @@
+<div class="user-profile">
+  <% if current_user.followings.find { |following| following.following_id == @user.id } %>
+    <%= link_to 'Отписаться',
+                follow_path(current_user.followings.find { |following| following.following_id == @user.id }.id),
+                method: :delete %>
+  <% else %>
+    <% if @user.id != current_user.id %>
+      <%= form_with(model: Follow.new, url: "/follow") do |form| %>
+        <%= form.number_field :follower_id, id: :user_id, value: current_user.id, type: :hidden %>
+        <%= form.number_field :following_id, id: :user_id, value: @user.id, type: :hidden %>
+        <div class="actions">
+          <%= form.submit "Подписаться" %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <div class="profile-head">
+    <div class="user-info">
+      <%= image_tag @user.avatar, class: "avatar" %>
+      <%= @user.username %>
+    </div>
+    <div class="followings-followers">
+      <p><%= @user.followings.count %></p>
+      <%= link_to "Отслеживаем клиентами", followings_path(@user.id) %>
+    </div>
+    <div class="followings-followers">
+      <p><%= @user.followers.count %></p>
+      <%= link_to "Отслеживает магазины", followers_path(@user.id) %>
+    </div>
+  </div>
+
+
+  <% if can? :create, Post %>
+    <%= link_to 'Создать лот', new_post_path %>
+  <% end %>
+
+  <div class="post-container">
+    <% @user.post.reverse.each do |post| %>
+      <div class="post">
+        <% media_presenter = PostMediaPresenter.new(post) %>
+        <%= link_to media_presenter.make_presentation, post_path(id: post.id) %>
+      </div>
+    <% end %>
+  </div>
+</div>

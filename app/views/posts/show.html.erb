@@ -1,0 +1,88 @@
+<div class="post-full">
+  <div class="post-image">
+    <% post_media = PostMediaPresenter.new(@post) %>
+    <%= post_media.make_tag %>
+    <%#= video_tag(url_for(@post.image), controls: true) %>
+  </div>
+  <div class="post-utility">
+    <div class="author-info">
+      <%= link_to image_tag(@post.user.avatar, class: "author-avatar"), profile_path(id: @post.user.id) %>
+      <%= link_to @post.user.username, profile_path(id: @post.user.id) %>
+    </div>
+    <% if @post.count != 0 %>
+      <div>
+        <span>Осталось на складе: <p class="warehouse-count"><%= @post.count %></p></span>
+      </div>
+      <div>
+        <span>Цена: <%= number_to_currency(@post.cost, unit: "₽", format: "%n %u") %></span>
+        <div class="minus" style="padding: 10px; background: #2E2F30; color: white">-</div>
+        <div class="current-count">0</div>
+        <div class="plus" style="padding: 10px; background: #2E2F30; color: white">+</div>
+      </div>
+      <button class="add-to-busket">Добавить в корзину</button>
+    <% else %>
+      <span>Товара нет в наличии!</span>
+    <% end %>
+    <div class="commentaries">
+      <% @post.commentary.each do |comment| %>
+        <%= render 'include/commentary/commentary', commentary: comment %>
+      <% end %>
+    </div>
+    <%= render 'include/like/like', post: @post %>
+    <%= render 'commentaries/form', post_id: @post.id, commentary: Commentary.new %>
+  </div>
+</div>
+
+<% if can? :update, @post %>
+  <%= link_to 'Редактировать', edit_post_path(@post) %>
+<% end %>
+<% if can? :destroy, @post %>
+  <%= link_to 'Удалить', post_path(@post), method: :delete %>
+<% end %>
+<%= link_to 'К профилю', profile_path(@post.user.id) %>
+
+<script>
+    let plus = document.querySelector(".plus")
+    let minus = document.querySelector(".minus")
+    let currentCount = document.querySelector(".current-count")
+    let addToBusket = document.querySelector(".add-to-busket")
+    const warehouseCount = Number(document.querySelector(".warehouse-count").textContent)
+
+    let plusCount = () => {
+        let count = Number(currentCount.textContent);
+        if (count < warehouseCount) count += 1;
+        currentCount.textContent = `${count}`;
+    }
+
+    let minusCount = () => {
+        let count = Number(currentCount.textContent);
+        if (count > 0) count -= 1;
+        currentCount.textContent = `${count}`;
+    }
+
+    plus.addEventListener('click', plusCount);
+    minus.addEventListener('click', minusCount);
+
+    addToBusket.addEventListener('click', () => {
+        let requestAddToBusket = async () => {
+            let response = await fetch("/busket",
+                {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ "lot_id": <%= @post.id %>, "count": Number(currentCount.textContent), "authenticity_token": '<%= form_authenticity_token %>' })
+                });
+
+            const json = await response.json();
+            console.log(json)
+            let tempParent = addToBusket.parentElement;
+            addToBusket.remove()
+
+            let result = document.createElement("span")
+            result.textContent = `${json['result']}`;
+            console.log(result);
+            tempParent.append(result)
+        }
+
+        requestAddToBusket();
+    })
+</script>

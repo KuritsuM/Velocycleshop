@@ -1,0 +1,11 @@
+<% if @followings.empty? %>
+  <h2>У пользователя ни на что не подписан 😭</h2>
+<% end %>
+<div class="followers">
+  <% @followings.each do |following| %>
+    <div class="follower-profile">
+      <%= link_to image_tag(following.avatar, class: "avatar"), profile_path(following.id) %>
+      <%= link_to "#{following.username}", profile_path(following.id) %>
+    </div>
+  <% end %>
+</div>

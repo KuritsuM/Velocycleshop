@@ -1,0 +1,16 @@
+<% if user_signed_in? %>
+  <div class="dropdown">
+    <%= image_tag current_user.avatar, class: "avatar" %>
+    <div class="dropdown-content">
+      <%= link_to 'Профиль', profile_path(id: current_user.id) %>
+      <%= link_to 'Магазины', users_path(page: 1) %>
+      <%= link_to 'Настройки', edit_user_registration_path %>
+      <%= link_to 'Корзина', show_busket_path %>
+      <%= link_to 'Заказы', show_user_order_path %>
+      <%= link_to 'Выход', destroy_user_session_path, method: :delete %>
+    </div>
+  </div>
+<% else %>
+  <%= link_to 'Вход', new_user_session_path %>
+  <%= link_to 'Регистрация', new_user_registration_path %>
+<% end %>

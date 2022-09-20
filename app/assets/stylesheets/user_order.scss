@@ -1,0 +1,15 @@
+// Place all the styles related to the UserOrder controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: https://sass-lang.com/
+
+.order img {
+  height: 240px;
+  width: 320px
+}
+
+.order {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 30px
+}

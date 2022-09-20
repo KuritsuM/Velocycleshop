@@ -1,0 +1,22 @@
+<% if @current_busket.empty? %>
+  <div>
+    <h1>Ваша корзина пуста!</h1>
+  </div>
+<% else %>
+  <div>
+    <% @lots.each do |lot| %>
+      <div>
+        <span><%= lot.title %></span><br/>
+        <span>На складе: <%= lot.count %></span><br/>
+        <span>В вашей корзине: <%= lot.in_busket_count %></span><br/>
+        <span>Цена заказа: <%= number_to_currency(lot.total_cost, unit: "₽", format: "%n %u") %></span>
+      </div>
+      <br/><br/>
+    <% end %>
+    <span>Цена полного заказа: <%= number_to_currency(@full_order_cost, unit: "₽", format: "%n %u") %></span>
+  </div>
+  <div>
+    <%= link_to "Подтвердить заказ", create_user_order_path(),method: :post %>
+    <%= link_to "Очистить корзину", destroy_busket_path(), method: :delete %>
+  </div>
+<% end %>
